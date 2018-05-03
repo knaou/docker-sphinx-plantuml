@@ -24,3 +24,12 @@ Then, you can render uml directive like this.
 
         Hoge --> Piyo
 
+# Build
+
+Call html(default),
+
+    docker run -v /path/to/doc:/work knaou/sphinx-plantuml 
+
+Or with other format,
+
+    docker run -v /path/to/doc:/work knaou/sphinx-plantuml make singlehtml
