@@ -10,7 +10,7 @@ RUN mkdir -p /opt/plantuml && \
 	unzip /tmp/font.zip -d /usr/share/fonts/ && \
 	rm /tmp/font.zip && \
 	fc-cache -fv && \
-	pip install sphinx sphinxcontrib-plantuml && \
+	pip install sphinx sphinxcontrib-plantuml sphinx_rtd_theme && \
 	apk del wget unzip
 
 RUN mkdir /work
