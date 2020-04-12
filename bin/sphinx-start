@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker run -it -u `id -u`:`id -g` -v `pwd`:/work knaou/sphinx-plantuml sphinx-quickstart
+
