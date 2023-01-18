@@ -1,7 +1,8 @@
 version: "3"
 services:
-  sut:
-    build: .
+  e2e:
+    image: localhost:15000/testing-image
     volumes:
       - ./test:/work
+      - ../_build/e2e:/result
     command: ./test.sh

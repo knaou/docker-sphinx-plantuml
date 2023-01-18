@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 3 * * 6'
+name: build via dagger
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    services:
+      registry:
+        image: registry
+        ports:
+          - 15000:5000
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Prepare dagger and test environment
+        uses: dagger/dagger-for-github@v3
+        with:
+          cmds: |
+            project init
+            project update
+      - name: Build image and push to local registy
+        uses: dagger/dagger-for-github@v3
+        with:
+          cmds: |
+            do build
+            do push_local
+      - name: Execute e2e test
+        run: |
+          cd e2e; docker-compose run e2e
+      - name: Build image and push to local registy
+        uses: dagger/dagger-for-github@v3
+        with:
+          cmds: |
+            do build
+            do push_dockerhub
+        env:
+          REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Archive build output
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-report
+          path: |
+            !.gitignore
+            _build/**/*
