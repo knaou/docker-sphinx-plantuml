@@ -17,13 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Prepare dagger and test environment
-        uses: dagger/dagger-for-github@v3
+        uses: dagger/dagger-for-github@v4
         with:
           cmds: |
             project init
             project update
       - name: Build image and push to local registy
-        uses: dagger/dagger-for-github@v3
+        uses: dagger/dagger-for-github@v4
         with:
           cmds: |
             do build
@@ -32,7 +32,7 @@ jobs:
         run: |
           cd e2e; docker-compose run e2e
       - name: Build image and push to local registy
-        uses: dagger/dagger-for-github@v3
+        uses: dagger/dagger-for-github@v4
         with:
           cmds: |
             do build
