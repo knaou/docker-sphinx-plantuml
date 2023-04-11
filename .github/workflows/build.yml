@@ -11,32 +11,32 @@ jobs:
     steps: 
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Get git hash
+    - name: Get hash
       run: echo "${GITHUB_SHA}" > _build/hash.txt
-    - name: Build Docker image
+    - name: Build image
       uses: docker/build-push-action@v4
       with:
         push: false
         tags: |
           knaou/sphinx-plantuml:${{ github.sha }}
           knaou/sphinx-plantuml:latest
-    - name: E2E Test
+    - name: E2E test
       run: docker compose --project-directory e2e run e2e
-    - name: Login to Docker Hub
-      if: env.GITHUB_TOKEN
+    - name: Login to docker hub
+      if: ${{ !github.event.act }}
       uses: docker/login-action@v2
       with:
         username: knaou
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Push Docker image
-      if: env.GITHUB_TOKEN
+    - name: Push image
+      if: ${{ !github.event.act }}
       uses: docker/build-push-action@v4
       with:
         push: true
         tags: |
           knaou/sphinx-plantuml:latest
     - name: Archive build output
-      if: env.GITHUB_TOKEN
+      if: ${{ !github.event.act }}
       uses: actions/upload-artifact@v3
       with:
         name: build-report

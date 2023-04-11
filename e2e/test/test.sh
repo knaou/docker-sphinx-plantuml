@@ -2,9 +2,9 @@
 
 set -e
 
-rm -rf build source
+cd `dirname $0`/..
+cp test/Makefile .
 
-cd `dirname $0`
 cat <<-EOF | sphinx-quickstart
 y
 prohect

@@ -2,6 +2,6 @@ services:
   e2e:
     image:  knaou/sphinx-plantuml
     volumes:
-      - ./test:/work
+      - ./test:/work/test:ro
       - ../_build/e2e:/result
-    command: ./test.sh
+    command: ./test/test.sh
