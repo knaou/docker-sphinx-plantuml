@@ -23,20 +23,20 @@ jobs:
     - name: E2E Test
       run: docker compose --project-directory e2e run e2e
     - name: Login to Docker Hub
-      if: env.ACTIONS_RUNTIME_TOKEN
+      if: env.GITHUB_TOKEN
       uses: docker/login-action@v2
       with:
         username: knaou
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Push Docker image
-      if: env.ACTIONS_RUNTIME_TOKEN
+      if: env.GITHUB_TOKEN
       uses: docker/build-push-action@v4
       with:
         push: true
         tags: |
           knaou/sphinx-plantuml:latest
     - name: Archive build output
-      if: env.ACTIONS_RUNTIME_TOKEN
+      if: env.GITHUB_TOKEN
       uses: actions/upload-artifact@v3
       with:
         name: build-report
