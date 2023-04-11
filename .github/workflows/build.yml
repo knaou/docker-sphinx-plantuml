@@ -21,13 +21,15 @@ jobs:
           knaou/sphinx-plantuml:${{ github.sha }}
           knaou/sphinx-plantuml:latest
     - name: E2E Test
-      run: docker compose --project-directory e2e up
+      run: docker compose --project-directory e2e run e2e
     - name: Login to Docker Hub
+      if: env.ACTIONS_RUNTIME_TOKEN
       uses: docker/login-action@v2
       with:
         username: knaou
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Push Docker image
+      if: env.ACTIONS_RUNTIME_TOKEN
       uses: docker/build-push-action@v4
       with:
         push: true

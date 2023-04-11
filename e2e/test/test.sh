@@ -2,6 +2,8 @@
 
 set -e
 
+rm -rf build source
+
 cd `dirname $0`
 cat <<-EOF | sphinx-quickstart
 y
