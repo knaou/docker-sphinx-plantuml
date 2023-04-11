@@ -4,46 +4,45 @@ on:
       - main
   schedule:
     - cron: '0 3 * * 6'
-name: build via dagger
+name: build
 jobs:
-  build:
+  test:
     runs-on: [ubuntu-latest]
-    services:
-      registry:
-        image: registry
-        ports:
-          - 15000:5000
     steps: 
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Prepare dagger and test environment
-        uses: dagger/dagger-for-github@v4
-        with:
-          cmds: |
-            project init
-            project update
-      - name: Build image and push to local registy
-        uses: dagger/dagger-for-github@v4
-        with:
-          cmds: |
-            do build
-            do push_local
-      - name: Execute e2e test
-        run: |
-          cd e2e; docker-compose run e2e
-      - name: Build image and push to local registy
-        uses: dagger/dagger-for-github@v4
-        with:
-          cmds: |
-            do build
-            do push_dockerhub
-        env:
-          REGISTRY_PASS: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Archive build output
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-report
-          path: |
-            !.gitignore
-            _build/**/*
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Get git hash
+      run: echo "${GITHUB_SHA}" > _build/hash.txt
+    - name: Build Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: Dockerfile
+        push: false
+        tags: |
+          knaou/sphinx-plantuml:${{ github.sha }}
+          knaou/sphinx-plantuml:latest
+    - name: Start Docker Compose
+      run: docker compose --project-directory e2e up
+    - name: Archive build output
+      if: env.ACTIONS_RUNTIME_TOKEN
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-report
+        path: |
+          !.gitignore
+          _build/**/*
+  build_and_push:
+    runs-on: [ubuntu-latest]
+    steps: 
+    - name: Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: Dockerfile
+        push: true
+        tags: |
+          knaou/sphinx-plantuml:latest
+      secrets:
+        DOCKER_USERNAME: knaou
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
