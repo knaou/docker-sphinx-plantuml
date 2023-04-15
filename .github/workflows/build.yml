@@ -10,7 +10,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps: 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
     - name: Get hash
       run: echo "${GITHUB_SHA}" > _build/hash.txt
     - name: Build image

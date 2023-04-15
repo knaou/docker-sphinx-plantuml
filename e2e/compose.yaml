@@ -1,6 +1,6 @@
 services:
   e2e:
-    image:  knaou/sphinx-plantuml
+    image:  knaou/sphinx-plantuml:${GITHUB_SHA:-latest}
     volumes:
       - ./test:/work/test:ro
       - ../_build/e2e:/result
